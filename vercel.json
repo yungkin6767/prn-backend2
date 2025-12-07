@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "routes": [
+    { "src": "/chat/(.*)", "dest": "/api/chat.js" },
+    { "src": "/engine/(.*)", "dest": "/api/engine.js" },
+    { "src": "/voice/(.*)", "dest": "/api/voice.js" },
+    { "src": "/auth/(.*)", "dest": "/api/auth.js" },
+    { "src": "/stream/(.*)", "dest": "/api/stream.js" },
+    { "src": "/(.*)", "dest": "/api/chat.js" }
+  ]
+}
+

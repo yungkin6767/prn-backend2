@@ -1,11 +1,8 @@
-import express from "express";
-
-const router = express.Router();
-
-// Streaming endpoint placeholder
-router.get("/", (req, res) => {
-  res.json({ message: "Stream API endpoint - Coming soon" });
-});
-
-export default router;
+export default async function handler(req, res) {
+  if (req.method === "GET") {
+    return res.status(200).json({ message: "Stream API endpoint - Coming soon" });
+  }
+  
+  return res.status(405).json({ error: "Method not allowed" });
+}
 

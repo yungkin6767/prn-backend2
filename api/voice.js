@@ -2,6 +2,10 @@ import axios from "axios";
 import { config } from "../config/env.js";
 
 export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   const { text } = req.body;
 
   try {

@@ -12,13 +12,24 @@ export async function runPRNAI(messages) {
   try {
     // PRIMARY ENGINE → GEMINI
     const result = await runGemini(fullMessages);
-    if (result) return result;
+    if (result) {
+      console.log("✅ Gemini response successful");
+      return result;
+    }
 
     // FAILOVER #1 → OpenAI
+    console.log("⚠️ Gemini failed, attempting OpenAI failover...");
     const result2 = await runOpenAI(fullMessages);
-    if (result2) return result2;
+    if (result2) {
+      console.log("✅ OpenAI failover successful");
+      return result2;
+    }
 
-    return { reply: "Ms. PRN is currently offline… try again soon." };
+    console.error("❌ All AI engines failed");
+    return { 
+      reply: "Ms. PRN is currently offline. Both Gemini and OpenAI failed. Please check your API keys in the .env file.",
+      error: "all_engines_failed"
+    };
 
   } catch (err) {
     console.error("PRN AI Router Error:", err);

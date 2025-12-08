@@ -28,6 +28,6 @@ export default async function handler(req, res) {
     return res.json({ token });
   }
 
-  res.status(400).json({ error: "Invalid auth action" });
+  return res.status(400).json({ error: "Invalid auth action" });
 }
 

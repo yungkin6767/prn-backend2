@@ -2,72 +2,6 @@ import axios from "axios";
 import { config } from "../../config/env.js";
 import { msprnPersona } from "../persona/msprn.js";
 
-// Initialize Gemini AI engine
-let genAI = null;
-let model = null;
-
-export function initializeGemini(modelName = "gemini-pro") {
-  const apiKey = getApiKey("OPENAI_API_KEY");
-  
-  if (!apiKey) {
-    throw new Error("Google API key not found");
-  }
-  
-  genAI = new GoogleGenerativeAI(apiKey);
-  model = genAI.getGenerativeModel({ model: modelName });
-  
-  return model;
-}
-
-export function getGeminiModel(modelName = "gemini-pro") {
-  if (!model) {
-    return initializeGemini(modelName);
-  }
-  return model;
-}
-
-// Helper function to convert messages to Gemini format
-export function convertToGeminiFormat(messages) {
-  const geminiMessages = [];
-  
-  for (const msg of messages) {
-    if (msg.role === "system") {
-      // System messages are handled via systemInstruction, skip them here
-      continue;
-    }
-    
-    const role = msg.role === "user" ? "user" : "model";
-    const content = msg.content || msg.text || "";
-    
-    if (content) {
-      geminiMessages.push({
-        role: role,
-        parts: [{ text: content }]
-      });
-    }
-  }
-  
-  return geminiMessages;
-}
-
-// Generate content using Gemini
-export async function generateContent({ messages, systemInstruction, modelName = "gemini-pro" }) {
-  const currentModel = getGeminiModel(modelName);
-  const geminiMessages = convertToGeminiFormat(messages);
-  
-  const result = await currentModel.generateContent({
-    contents: geminiMessages,
-    systemInstruction: systemInstruction?.trim()
-  });
-  
-  const response = await result.response;
-  return {
-    text: response.text(),
-    response: response,
-    result: result
-  };
-}
-
 // Run Gemini with messages array (simplified interface)
 export async function runGemini(messages) {
   try {
@@ -110,7 +44,12 @@ export async function runGemini(messages) {
     };
 
   } catch (err) {
-    console.error("Gemini Error:", err);
+    // Check if it's a 429 (quota exceeded) error
+    if (err.response?.status === 429) {
+      console.warn("Gemini quota exceeded, failing over to OpenAI...");
+    } else {
+      console.error("Gemini Error:", err.response?.data || err.message);
+    }
     return null; // fallback will trigger
   }
 }

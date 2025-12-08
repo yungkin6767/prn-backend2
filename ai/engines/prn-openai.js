@@ -40,7 +40,11 @@ export async function runOpenAI(messages) {
     };
 
   } catch (err) {
-    console.error("OpenAI Error:", err);
+    if (err.response?.status === 401) {
+      console.error("OpenAI Error: Invalid API key. Check your OPENAI_API_KEY in .env");
+    } else {
+      console.error("OpenAI Error:", err.response?.data || err.message);
+    }
     return null; // fallback will trigger
   }
 }

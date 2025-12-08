@@ -16,12 +16,17 @@ Backend server for PRN Creator app with Vercel serverless functions.
 npm install
 ```
 
-2. Create `.env` file:
+2. Create `.env` file in `prn-backend/` directory:
 ```
-GOOGLE_API_KEY=your_gemini_key
-OPENAI_API_KEY=your_openai_key (optional)
-JWT_SECRET=your_secret
+GOOGLE_API_KEY=your_google_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
+JWT_SECRET=your_random_secret_string
 ```
+
+**To get your API keys:**
+- **Google Gemini**: https://ai.google.dev/ → Get API Key
+- **OpenAI**: https://platform.openai.com/api-keys → Create new secret key
+- **JWT_SECRET**: Any random string (e.g., use `openssl rand -hex 32`)
 
 3. Run locally:
 ```bash
